@@ -1,6 +1,7 @@
 package com.example.wanderwheels;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +42,7 @@ public class TourAdapter extends RecyclerView.Adapter<TourAdapter.TourViewHolder
         return tourList.size();
     }
 
-    static class TourViewHolder extends RecyclerView.ViewHolder {
+    public static class TourViewHolder extends RecyclerView.ViewHolder {
         private final ImageView tourImage;
         private final TextView tourName;
         private final TextView tourDuration;
@@ -63,6 +64,23 @@ public class TourAdapter extends RecyclerView.Adapter<TourAdapter.TourViewHolder
             tourDistance = itemView.findViewById(R.id.tourDistance);
             viewTourButton = itemView.findViewById(R.id.viewTourButton);
         }
+        private TextView createTagView(Context context, String tagText) {
+            TextView tagView = new TextView(context);
+            tagView.setText(tagText);
+            tagView.setBackgroundResource(R.drawable.tag_background_small);
+            tagView.setPadding(16, 8, 16, 8);
+            tagView.setTextSize(12);
+
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            layoutParams.setMargins(0, 0, 16, 0);
+            tagView.setLayoutParams(layoutParams);
+
+            return tagView;
+        }
+
 
         public void bind(Tour tour) {
             Context context = itemView.getContext();
@@ -77,31 +95,14 @@ public class TourAdapter extends RecyclerView.Adapter<TourAdapter.TourViewHolder
             tourStartLocation.setText(tour.getStartLocation());
             tourDistance.setText(tour.getDistance());
 
-            // Add tags
-            tagContainer.removeAllViews();
-            for (String tag : tour.getTags()) {
-                TextView tagView = new TextView(context);
-                tagView.setText(tag);
-                tagView.setBackgroundResource(R.drawable.tag_background_small);
-                tagView.setPadding(16, 8, 16, 8);
-                tagView.setTextSize(12);
-
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT);
-                layoutParams.setMargins(0, 0, 16, 0);
-                tagView.setLayoutParams(layoutParams);
-
-                tagContainer.addView(tagView);
-            }
-
-            // Set view tour button click listener
+            // Handle "View Tour" button click
             viewTourButton.setOnClickListener(v -> {
                 Toast.makeText(context,
                         "Viewing details for " + tour.getName() + " tour",
                         Toast.LENGTH_SHORT).show();
-                // TODO: Implement tour details view
+                // TODO: Implement detailed view navigation
             });
         }
+
     }
 }

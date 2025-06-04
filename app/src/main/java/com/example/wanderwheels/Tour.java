@@ -3,7 +3,7 @@ package com.example.wanderwheels;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tour {
+public class Tour  {
     private String name;
     private int imageResId;
     private String duration;
@@ -35,6 +35,8 @@ public class Tour {
     public String getDuration() {
         return duration;
     }
+
+
 
     public void setDuration(String duration) {
         this.duration = duration;

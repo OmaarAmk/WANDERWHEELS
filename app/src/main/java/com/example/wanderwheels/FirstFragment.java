@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.AlertDialog;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,7 +18,7 @@ import androidx.fragment.app.Fragment;
 public class FirstFragment extends Fragment {
 
     private EditText emailEditText, passwordEditText;
-    private Button loginButton;
+    private Button loginButton, backButton;
     private TextView forgotPasswordTextView;
 
     @Nullable
@@ -30,6 +31,7 @@ public class FirstFragment extends Fragment {
         passwordEditText = root.findViewById(R.id.passwordEditText);
         loginButton = root.findViewById(R.id.loginButton);
         forgotPasswordTextView = root.findViewById(R.id.forgotPasswordTextView);
+        backButton = root.findViewById(R.id.backButton);
 
         loginButton.setOnClickListener(v -> {
             String email = emailEditText.getText().toString().trim();
@@ -40,15 +42,43 @@ public class FirstFragment extends Fragment {
                 return;
             }
 
-            // Ajoute ici la logique de connexion (Firebase ou autre)
             Toast.makeText(getContext(), "Tentative de connexion avec\nEmail: " + email, Toast.LENGTH_SHORT).show();
         });
 
         forgotPasswordTextView.setOnClickListener(v -> {
-            // Logique mot de passe oublié
-            Toast.makeText(getContext(), "Fonction mot de passe oublié déclenchée", Toast.LENGTH_SHORT).show();
+            showForgotPasswordDialog();
+        });
+
+        backButton.setOnClickListener(v -> {
+            if (getActivity() != null) {
+                getActivity().onBackPressed();
+            }
         });
 
         return root;
+    }
+
+    private void showForgotPasswordDialog() {
+        if (getContext() == null) return;
+
+        EditText emailInput = new EditText(getContext());
+        emailInput.setHint("Entrez votre email");
+        emailInput.setInputType(android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+
+        new AlertDialog.Builder(getContext())
+                .setTitle("Réinitialisation du mot de passe")
+                .setMessage("Veuillez entrer votre email pour recevoir un lien de réinitialisation.")
+                .setView(emailInput)
+                .setPositiveButton("Envoyer", (dialog, which) -> {
+                    String enteredEmail = emailInput.getText().toString().trim();
+                    if (TextUtils.isEmpty(enteredEmail)) {
+                        Toast.makeText(getContext(), "Email requis", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Simulated success message — replace this with actual backend logic
+                        Toast.makeText(getContext(), "Lien envoyé à : " + enteredEmail, Toast.LENGTH_LONG).show();
+                    }
+                })
+                .setNegativeButton("Annuler", null)
+                .show();
     }
 }

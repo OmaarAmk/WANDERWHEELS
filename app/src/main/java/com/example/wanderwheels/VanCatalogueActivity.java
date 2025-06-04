@@ -4,10 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +31,13 @@ public class VanCatalogueActivity extends AppCompatActivity {
     private Button filterAll, filterClassic, filterLuxury, filterCompact, filterFamily;
     private TextView availableVansCount;
     private Spinner sortSpinner;
+    private FrameLayout fragmentContainer;
+    private LinearLayout mainContent;
+
+    // Navigation components
+    private LinearLayout navHome, navVans, navTours;
+    private ImageView navHomeIcon, navVansIcon, navToursIcon;
+    private TextView navHomeText, navVansText, navToursText;
 
     private List<Van> fullVanList;
     private List<Van> displayedVanList;
@@ -36,13 +46,13 @@ public class VanCatalogueActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_van_catalogue);
-
         initViews();
         setupRecyclerView();
         setupFilterButtons();
         setupSortSpinner();
         setupNavigationButtons();
         setupAccountButton();
+        setActiveTab(R.id.navVans); // Highlight current tab
     }
 
     private void initViews() {
@@ -54,7 +64,21 @@ public class VanCatalogueActivity extends AppCompatActivity {
         filterCompact = findViewById(R.id.filterCompact);
         filterFamily = findViewById(R.id.filterFamily);
         sortSpinner = findViewById(R.id.sortSpinner);
+        fragmentContainer = findViewById(R.id.fragmentContainer);
+        mainContent = findViewById(R.id.mainContent);
 
+        // Initialize navigation items
+        navHome = findViewById(R.id.navHome);
+        navVans = findViewById(R.id.navVans);
+        navTours = findViewById(R.id.navTours);
+        navHomeIcon = findViewById(R.id.navHomeIcon);
+        navVansIcon = findViewById(R.id.navVansIcon);
+        navToursIcon = findViewById(R.id.navToursIcon);
+        navHomeText = findViewById(R.id.navHomeText);
+        navVansText = findViewById(R.id.navVansText);
+        navToursText = findViewById(R.id.navToursText);
+
+        // Logo click listener
         View logoContainer = findViewById(R.id.logoContainer);
         logoContainer.setOnClickListener(v -> {
             Intent intent = new Intent(this, MainActivity.class);
@@ -144,10 +168,22 @@ public class VanCatalogueActivity extends AppCompatActivity {
     }
 
     private void setupNavigationButtons() {
-        View homeNav = findViewById(R.id.navHome);
-        homeNav.setOnClickListener(v -> {
+        // Home Button
+        navHome.setOnClickListener(v -> {
             Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        });
+
+        // Vans Button (current screen)
+        navVans.setOnClickListener(v -> {
+            // Optional: Scroll to top of the list
+            vanRecyclerView.smoothScrollToPosition(0);
+        });
+
+        // Tours Button - NOW FULLY FUNCTIONAL
+        navTours.setOnClickListener(v -> {
+            Intent intent = new Intent(this, TourActivity.class);
             startActivity(intent);
         });
     }
@@ -155,13 +191,29 @@ public class VanCatalogueActivity extends AppCompatActivity {
     private void setupAccountButton() {
         ImageButton accountButton = findViewById(R.id.accountButton);
         accountButton.setOnClickListener(v -> {
+            // Show fragment and hide main content
+            fragmentContainer.setVisibility(View.VISIBLE);
+            mainContent.setVisibility(View.GONE);
+
             FirstFragment fragment = new FirstFragment();
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.fragmentContainer, fragment); // Assurez-vous que fragmentContainer existe
+            transaction.replace(R.id.fragmentContainer, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
         });
+    }
+
+    // Handle back button
+    @Override
+    public void onBackPressed() {
+        if (fragmentContainer.getVisibility() == View.VISIBLE) {
+            fragmentContainer.setVisibility(View.GONE);
+            mainContent.setVisibility(View.VISIBLE);
+            getSupportFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void resetFilterButtons() {
@@ -177,6 +229,34 @@ public class VanCatalogueActivity extends AppCompatActivity {
         filterCompact.setTextColor(inactiveColor);
         filterFamily.setBackgroundResource(R.drawable.filter_button_inactive);
         filterFamily.setTextColor(inactiveColor);
+    }
+
+    // Highlight active navigation tab
+    private void setActiveTab(int activeTabId) {
+        int activeColor = ContextCompat.getColor(this, R.color.blue_600);
+        int inactiveColor = ContextCompat.getColor(this, R.color.gray_500);
+
+        // Reset all tabs
+        navHomeIcon.setColorFilter(inactiveColor);
+        navHomeText.setTextColor(inactiveColor);
+        navVansIcon.setColorFilter(inactiveColor);
+        navVansText.setTextColor(inactiveColor);
+        navToursIcon.setColorFilter(inactiveColor);
+        navToursText.setTextColor(inactiveColor);
+
+        // Activate current tab
+        if (activeTabId == R.id.navHome) {
+            navHomeIcon.setColorFilter(activeColor);
+            navHomeText.setTextColor(activeColor);
+        }
+        else if (activeTabId == R.id.navVans) {
+            navVansIcon.setColorFilter(activeColor);
+            navVansText.setTextColor(activeColor);
+        }
+        else if (activeTabId == R.id.navTours) {
+            navToursIcon.setColorFilter(activeColor);
+            navToursText.setTextColor(activeColor);
+        }
     }
 
     private List<Van> createSampleVans() {

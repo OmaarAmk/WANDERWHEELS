@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    app:cardElevation="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,8 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="180dp"
             android:scaleType="centerCrop"
-
-            />
+            android:contentDescription="@string/tour_image_desc"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,10 +36,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Southwest National Parks"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:maxLines="1"
+                    android:ellipsize="end"/>
 
                 <TextView
                     android:id="@+id/tourDuration"
@@ -49,28 +47,26 @@
                     android:background="@drawable/badge_background"
                     android:paddingHorizontal="8dp"
                     android:paddingVertical="4dp"
-                    android:text="7 days"
-                    android:textColor="@color/blue_800"
-                    android:textSize="12sp" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    android:textColor="@color/blue_800"/>
             </LinearLayout>
 
             <TextView
                 android:id="@+id/tourDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Explore the iconic landscapes of Utah and Arizona's national parks"
-                android:textColor="@color/gray_600" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textColor="@color/gray_600"
+                android:maxLines="2"
+                android:ellipsize="end"/>
 
             <LinearLayout
                 android:id="@+id/tagContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:orientation="horizontal">
-
-                <!-- Tags will be added programmatically -->
-
-            </LinearLayout>
+                android:orientation="horizontal"
+                android:minHeight="24dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -89,16 +85,15 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/ic_map_marker"
-                        app:tint="@color/gray_500" />
+                        android:tint="@color/gray_500"/>
 
                     <TextView
                         android:id="@+id/tourStartLocation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
-                        android:text="Start: Moab, UT"
-                        android:textColor="@color/gray_600"
-                        android:textSize="14sp" />
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                        android:textColor="@color/gray_600"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -112,16 +107,15 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/ic_route"
-                        app:tint="@color/gray_500" />
+                        />
 
                     <TextView
                         android:id="@+id/tourDistance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
-                        android:text="850 miles"
-                        android:textColor="@color/gray_600"
-                        android:textSize="14sp" />
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                        android:textColor="@color/gray_600"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -131,8 +125,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:backgroundTint="@color/blue_600"
-                android:text="View Tour Details"
-                android:textAllCaps="false" />
+                android:text="@string/view_tour_details"
+                android:textAllCaps="false"
+                android:textColor="@color/white"/>
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

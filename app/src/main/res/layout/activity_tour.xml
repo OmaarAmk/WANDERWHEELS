@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".VanCatalogueActivity">
+    tools:context=".TourActivity">
 
     <!-- Header -->
     <LinearLayout
@@ -63,139 +62,19 @@
             android:src="@drawable/account_button_bg"
             app:tint="@color/white"
             android:scaleType="centerInside" />
-
     </LinearLayout>
 
-    <!-- Scrollable Filter Buttons -->
-    <HorizontalScrollView
-        android:id="@+id/filterScrollView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/header"
-        android:background="@color/white"
-        android:paddingVertical="8dp"
-        android:elevation="2dp">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingHorizontal="8dp">
-
-            <Button
-                android:id="@+id/filterAll"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tous"
-                android:background="@drawable/filter_button_active"
-                android:textColor="@color/white"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:layout_marginHorizontal="4dp"/>
-
-            <Button
-                android:id="@+id/filterClassic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Classique"
-                android:background="@drawable/filter_button_inactive"
-                android:textColor="@color/gray_600"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:layout_marginHorizontal="4dp"/>
-
-            <Button
-                android:id="@+id/filterLuxury"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Luxe"
-                android:background="@drawable/filter_button_inactive"
-                android:textColor="@color/gray_600"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:layout_marginHorizontal="4dp"/>
-
-            <Button
-                android:id="@+id/filterCompact"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Compact"
-                android:background="@drawable/filter_button_inactive"
-                android:textColor="@color/gray_600"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:layout_marginHorizontal="4dp"/>
-
-            <Button
-                android:id="@+id/filterFamily"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Familial"
-                android:background="@drawable/filter_button_inactive"
-                android:textColor="@color/gray_600"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:layout_marginHorizontal="4dp"/>
-        </LinearLayout>
-    </HorizontalScrollView>
-
-    <!-- FrameLayout pour le fragment (DOIT ÊTRE AU-DESSUS DU CONTENU PRINCIPAL) -->
-    <FrameLayout
-        android:id="@+id/fragmentContainer"
+    <!-- RecyclerView for Tours -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tourRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/header"
-        android:visibility="gone"/>
-
-    <!-- Main Content -->
-    <LinearLayout
-        android:id="@+id/mainContent"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/filterScrollView"
         android:layout_above="@id/bottomNavigation"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="8dp"
+        android:clipToPadding="false" />
 
-        <!-- Tri et compteur -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
-
-            <TextView
-                android:id="@+id/availableVansCount"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="12 vans disponibles"
-                android:textColor="@color/gray_600" />
-
-            <Spinner
-                android:id="@+id/sortSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minWidth="48dp"
-                android:minHeight="48dp"
-                android:background="@drawable/spinner_background"
-                android:entries="@array/sort_options"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="8dp"/>
-        </LinearLayout>
-
-        <!-- RecyclerView -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/vanRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:clipToPadding="false"
-            android:contentDescription="Liste des vans disponibles" />
-    </LinearLayout>
-
-    <!-- Navigation bas -->
+    <!-- Navigation Bar -->
     <LinearLayout
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
@@ -203,8 +82,11 @@
         android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:elevation="8dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
 
+        <!-- Home Tab -->
         <LinearLayout
             android:id="@+id/navHome"
             android:layout_width="0dp"
@@ -228,11 +110,12 @@
                 android:id="@+id/navHomeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Accueil"
+                android:text="Home"
                 android:textColor="@color/gray_500"
                 android:textSize="12sp"/>
         </LinearLayout>
 
+        <!-- Vans Tab -->
         <LinearLayout
             android:id="@+id/navVans"
             android:layout_width="0dp"
@@ -261,6 +144,7 @@
                 android:textSize="12sp"/>
         </LinearLayout>
 
+        <!-- Tours Tab -->
         <LinearLayout
             android:id="@+id/navTours"
             android:layout_width="0dp"
@@ -289,4 +173,5 @@
                 android:textSize="12sp"/>
         </LinearLayout>
     </LinearLayout>
+
 </RelativeLayout>

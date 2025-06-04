@@ -62,6 +62,22 @@
     <string name="profile">Profil</string>
     <string name="search">Rechercher</string>
 
+
+
+
+    <!-- Tour Strings -->
+    <string name="start_location_format">Start: %s</string>
+    <string name="tour_image_desc">Tour destination image</string>
+    <string name="start_location">Start Location</string>
+    <string name="distance">Distance</string>
+    <string name="itinerary">Itinerary</string>
+    <string name="book_tour">Book This Tour</string>
+    <string name="view_tour_details">View Tour Details</string>
+
+    <!-- Icon Strings -->
+    <string name="ic_map_marker_desc">Map marker icon</string>
+    <string name="ic_route_desc">Route icon</string>
+
     <!-- Filters -->
     <string name="all">Tous</string>
     <string name="classic">Classique</string>

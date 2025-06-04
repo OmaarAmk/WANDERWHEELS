@@ -32,6 +32,10 @@
         <activity android:name=".BookingActivity" />
         <!-- Activité du payement -->
         <activity android:name=".PaymentActivity" />
+        <activity
+            android:name=".TourActivity"
+            android:label="Tours"
+            />
 
     </application>
 

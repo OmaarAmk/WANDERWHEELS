@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -229,6 +230,18 @@ public class MainActivity extends AppCompatActivity {
         viewAllVehiclesButton.setOnClickListener(v -> {
             // Start VanCatalogueActivity when button is clicked
             Intent intent = new Intent(MainActivity.this, VanCatalogueActivity.class);
+            startActivity(intent);
+        });
+
+        // Add click listener for Vans tab in bottom navigation
+        LinearLayout navMap = findViewById(R.id.navMap);
+        LinearLayout Tours = findViewById(R.id.navProfile);
+        navMap.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, VanCatalogueActivity.class);
+            startActivity(intent);
+        });
+        Tours.setOnClickListener(v -> {
+            Intent intent = new Intent(this, TourActivity.class);
             startActivity(intent);
         });
     }

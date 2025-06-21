@@ -53,15 +53,7 @@
             android:layout_weight="1"
             android:layout_marginStart="16dp" />
 
-        <ImageButton
-            android:id="@+id/accountButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Compte"
-            android:src="@drawable/account_button_bg"
-            app:tint="@color/white"
-            android:scaleType="centerInside" />
+
     </LinearLayout>
 
     <!-- RecyclerView for Tours -->

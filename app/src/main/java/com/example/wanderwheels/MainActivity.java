@@ -1,20 +1,34 @@
 package com.example.wanderwheels;
 
 import android.app.DatePickerDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.view.View;
+import androidx.annotation.NonNull;
 import android.widget.ArrayAdapter;
+import androidx.core.content.ContextCompat;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import androidx.core.app.ActivityCompat;
+import android.location.LocationManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,11 +46,22 @@ public class MainActivity extends AppCompatActivity {
     private Button filterAllButton, filterVansButton, filterCaravansButton, filterRvButton, filter4x4Button;
     private VehicleAdapter vehicleAdapter;
     private TourAdapter tourAdapter;
+    private BatteryReceiver batteryReceiver; // Receiver to monitor battery status
+    private FusedLocationProviderClient fusedLocationClient;
+    private TextView locationTextView;
+    private TextView txtOutput;
+
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         // Initialize date format
         dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.US);
@@ -49,6 +74,19 @@ public class MainActivity extends AppCompatActivity {
         setupVehicleRecyclerView();
         setupTourRecyclerView();
         setupClickListeners();
+        txtOutput = findViewById(R.id.txtOutput);
+
+
+        // Register BatteryReceiver to listen for battery changes
+        batteryReceiver = new BatteryReceiver();
+        IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        registerReceiver(batteryReceiver, filter);
+
+        Button btnBattery = findViewById(R.id.btnBattery);
+        btnBattery.setOnClickListener(v -> checkBatteryStatus());
+
+
+
     }
 
     private void initViews() {
@@ -196,6 +234,40 @@ public class MainActivity extends AppCompatActivity {
         List<Tour> tours = createSampleTours();
         tourAdapter = new TourAdapter(tours);
         toursRecyclerView.setAdapter(tourAdapter);
+    }
+    public class BatteryReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+            int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+
+            String batteryStatus = "Battery Level: " + level + "%";
+
+            if (status == BatteryManager.BATTERY_STATUS_CHARGING) {
+                batteryStatus += " (Charging)";
+            } else if (status == BatteryManager.BATTERY_STATUS_DISCHARGING) {
+                batteryStatus += " (Discharging)";
+            } else if (status == BatteryManager.BATTERY_STATUS_FULL) {
+                batteryStatus += " (Full)";
+            }
+
+            // Display battery status in a toast message
+            Toast.makeText(context, batteryStatus, Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void checkBatteryStatus() {
+        IntentFilter iFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent batteryStatus = registerReceiver(null, iFilter);
+
+        int level;
+        if (batteryStatus != null) {
+            level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+        } else {
+            level = -1;
+        }
+
+        txtOutput.setText("Niveau de batterie : " + level + "%");
     }
 
     private void setupClickListeners() {

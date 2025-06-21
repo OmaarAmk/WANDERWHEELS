@@ -1,4 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
 
-</selector>
+    <!-- Fork -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M6,2h1v8h-1zM8,2h1v8h-1zM10,2h1v8h-1zM7,10h2v12h-2z" />
+
+    <!-- Knife -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M16,2c0,3 -2,5 -2,8v12h2v-12c0,-2 2,-5 2,-8h-2z" />
+</vector>

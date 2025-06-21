@@ -1,4 +1,9 @@
 package com.example.wanderwheels;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.FrameLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +26,7 @@ public class TourActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tour);
 
@@ -42,6 +48,12 @@ public class TourActivity extends AppCompatActivity {
         navHomeText = findViewById(R.id.navHomeText);
         navVansText = findViewById(R.id.navVansText);
         navToursText = findViewById(R.id.navToursText);
+        View logoContainer = findViewById(R.id.logoContainer);
+        logoContainer.setOnClickListener(v -> {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        });
 
         // Set the default active tab
         setActiveTab(R.id.navTours);
@@ -88,7 +100,6 @@ public class TourActivity extends AppCompatActivity {
             navToursText.setTextColor(activeColor);
         }
     }
-
     private List<Tour> createSampleTours() {
         List<Tour> tours = new ArrayList<>();
 

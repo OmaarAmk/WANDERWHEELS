@@ -127,11 +127,11 @@
 
             <Button
                 android:id="@+id/viewTourButton"
-                android:layout_width="match_parent"
+                android:layout_width="119dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:backgroundTint="@color/blue_600"
-                android:text="View Tour Details"
+                android:text="Book Now"
                 android:textAllCaps="false" />
         </LinearLayout>
     </LinearLayout>

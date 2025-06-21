@@ -1,6 +1,7 @@
 package com.example.wanderwheels;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -97,11 +98,21 @@ public class TourAdapter extends RecyclerView.Adapter<TourAdapter.TourViewHolder
 
             // Handle "View Tour" button click
             viewTourButton.setOnClickListener(v -> {
+                Intent intent = new Intent(context, BookingActivity.class);
+                intent.putExtra("tourName", tour.getName());
+                intent.putExtra("tourDuration", tour.getDuration());
+                intent.putExtra("tourStartLocation", tour.getStartLocation());
+                intent.putExtra("tourDistance", tour.getDistance());
+                intent.putExtra("tourDescription", tour.getDescription());
+                intent.putExtra("tourImageResId", tour.getImageResId());
+                context.startActivity(intent);
+
                 Toast.makeText(context,
                         "Viewing details for " + tour.getName() + " tour",
                         Toast.LENGTH_SHORT).show();
-                // TODO: Implement detailed view navigation
             });
+
+
         }
 
     }

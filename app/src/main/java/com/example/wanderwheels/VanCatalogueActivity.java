@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -191,18 +192,35 @@ public class VanCatalogueActivity extends AppCompatActivity {
     private void setupAccountButton() {
         ImageButton accountButton = findViewById(R.id.accountButton);
         accountButton.setOnClickListener(v -> {
-            // Show fragment and hide main content
-            fragmentContainer.setVisibility(View.VISIBLE);
-            mainContent.setVisibility(View.GONE);
+            // Vérifie si le fragment est déjà visible
+            if (fragmentContainer.getVisibility() == View.VISIBLE) {
+                // Si visible, on cache le fragment et on montre le contenu principal
+                fragmentContainer.setVisibility(View.GONE);
+                mainContent.setVisibility(View.VISIBLE);
 
-            FirstFragment fragment = new FirstFragment();
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.fragmentContainer, fragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+                // Retirer le fragment de l'écran
+                Fragment fragment = getSupportFragmentManager().findFragmentByTag("MY_FRAGMENT");
+                if (fragment != null) {
+                    getSupportFragmentManager().beginTransaction()
+                            .remove(fragment)
+                            .commit();
+                }
+            } else {
+                // Sinon, on montre le fragment et cache le contenu principal
+                fragmentContainer.setVisibility(View.VISIBLE);
+                mainContent.setVisibility(View.GONE);
+
+                // Remplacer le fragment actuel par un nouveau
+                FirstFragment fragment = new FirstFragment();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.fragmentContainer, fragment, "MY_FRAGMENT");
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
         });
     }
+
 
     // Handle back button
     @Override

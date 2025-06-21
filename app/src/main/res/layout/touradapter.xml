@@ -85,7 +85,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/ic_map_marker"
-                        android:tint="@color/gray_500"/>
+                        app:tint="@color/gray_500"/>
 
                     <TextView
                         android:id="@+id/tourStartLocation"
@@ -121,13 +121,13 @@
 
             <Button
                 android:id="@+id/viewTourButton"
-                android:layout_width="match_parent"
+                android:layout_width="123dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:backgroundTint="@color/blue_600"
-                android:text="@string/view_tour_details"
+                android:text="view_tour_details"
                 android:textAllCaps="false"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

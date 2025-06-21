@@ -232,7 +232,7 @@
                         android:layout_height="wrap_content"
                         android:button="@null"
                         android:text="PayPal"
-                        android:textColor="@color/black"/>
+                        android:textColor="@color/black" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </RadioGroup>

@@ -37,6 +37,11 @@
             android:label="Tours"
             />
 
+
+
     </application>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
 
 </manifest>

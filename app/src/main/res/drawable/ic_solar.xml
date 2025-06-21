@@ -1,4 +1,48 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-  
-</selector>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Panel Base -->
+    <path
+        android:fillColor="#2196F3"
+        android:pathData="M3,7h18v10H3z" />
+
+    <!-- Vertical Lines (cells) -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="0.5"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M9,7v10" />
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="0.5"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M15,7v10" />
+
+    <!-- Horizontal Lines (cells) -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="0.5"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M3,10h18" />
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="0.5"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M3,13h18" />
+
+    <!-- Stand -->
+    <path
+        android:strokeColor="#000000"
+        android:strokeWidth="1"
+        android:fillColor="#888888"
+        android:pathData="M12,17v4" />
+
+    <path
+        android:strokeColor="#000000"
+        android:strokeWidth="1"
+        android:fillColor="#888888"
+        android:pathData="M8,21h8" />
+</vector>

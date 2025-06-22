@@ -3,9 +3,7 @@ package com.example.wanderwheels;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +12,13 @@ import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.android.volley.Request;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class FirstFragment extends Fragment {
 
@@ -30,7 +35,6 @@ public class FirstFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_first, container, false);
 
-        // Login UI
         loginLayout = root.findViewById(R.id.loginLayout);
         loginEmail = root.findViewById(R.id.loginEmail);
         loginPassword = root.findViewById(R.id.loginPassword);
@@ -38,7 +42,6 @@ public class FirstFragment extends Fragment {
         switchToSignUpButton = root.findViewById(R.id.switchToSignUpButton);
         forgotPasswordTextView = root.findViewById(R.id.forgotPasswordTextView);
 
-        // Sign Up UI
         signUpLayout = root.findViewById(R.id.signUpLayout);
         signUpFirstName = root.findViewById(R.id.signUpFirstName);
         signUpLastName = root.findViewById(R.id.signUpLastName);
@@ -48,11 +51,7 @@ public class FirstFragment extends Fragment {
         signUpButton = root.findViewById(R.id.signUpButton);
         switchToLoginButton = root.findViewById(R.id.switchToLoginButton);
 
-        // Afficher le formulaire de connexion par défaut
         showLoginForm();
-
-        // Add TextWatcher to the birth date field to format it as dd/MM/yyyy
-
 
         loginButton.setOnClickListener(v -> {
             String email = loginEmail.getText().toString().trim();
@@ -63,7 +62,6 @@ public class FirstFragment extends Fragment {
                 return;
             }
 
-            // Simule une connexion réussie
             Toast.makeText(getContext(), "Connexion réussie", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(getActivity(), MainActivity.class);
             startActivity(intent);
@@ -86,9 +84,29 @@ public class FirstFragment extends Fragment {
                 return;
             }
 
-            // Simule une inscription réussie
-            Toast.makeText(getContext(), "Inscription réussie", Toast.LENGTH_SHORT).show();
-            showLoginForm(); // Retour au login
+            JSONObject jsonBody = new JSONObject();
+            try {
+                jsonBody.put("firstName", firstName);
+                jsonBody.put("lastName", lastName);
+                jsonBody.put("email", email);
+                jsonBody.put("password", password);
+                jsonBody.put("birthDate", birthDate);
+            } catch (JSONException e) {
+                Toast.makeText(getContext(), "Erreur JSON", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String url = ApiClient.BASE_URL + "/signup";
+
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, jsonBody,
+                    response -> {
+                        Toast.makeText(getContext(), "Inscription réussie", Toast.LENGTH_SHORT).show();
+                        showLoginForm();
+                    },
+                    error -> Toast.makeText(getContext(), "Erreur serveur", Toast.LENGTH_SHORT).show()
+            );
+
+            Volley.newRequestQueue(requireContext()).add(request);
         });
 
         switchToSignUpButton.setOnClickListener(v -> showSignUpForm());

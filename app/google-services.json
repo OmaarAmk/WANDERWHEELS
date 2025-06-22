@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "713091670962",
+    "project_id": "wanderwheels-8b72e",
+    "storage_bucket": "wanderwheels-8b72e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:713091670962:android:aeae872645c6d061affaab",
+        "android_client_info": {
+          "package_name": "com.example.wanderwheels"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdRyo1NHYoL1BhAp2kKdtWu58Ifcyjpko"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

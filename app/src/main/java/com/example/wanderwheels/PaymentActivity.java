@@ -7,12 +7,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -24,6 +31,9 @@ public class PaymentActivity extends AppCompatActivity {
     private RadioGroup rgPaymentMethod;
     private MaterialCardView cardVisa, cardMastercard, cardPaypal;
     private Button btnConfirmPayment;
+
+    private String vanName, fullName, email, phone, date, time, city, requests;
+    private int vanPrice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,16 +68,15 @@ public class PaymentActivity extends AppCompatActivity {
 
     private void displayBookingDetails() {
         Intent intent = getIntent();
-
-        String vanName = intent.getStringExtra("vanName");
-        int vanPrice = intent.getIntExtra("vanPrice", 0);
-        String fullName = intent.getStringExtra("FULL_NAME");
-        String email = intent.getStringExtra("EMAIL");
-        String phone = intent.getStringExtra("PHONE");
-        String date = intent.getStringExtra("DATE");
-        String time = intent.getStringExtra("TIME");
-        String city = intent.getStringExtra("CITY");
-        String requests = intent.getStringExtra("ADDITIONAL_REQUESTS");
+        vanName = intent.getStringExtra("vanName");
+        vanPrice = intent.getIntExtra("vanPrice", 0);
+        fullName = intent.getStringExtra("FULL_NAME");
+        email = intent.getStringExtra("EMAIL");
+        phone = intent.getStringExtra("PHONE");
+        date = intent.getStringExtra("DATE");
+        time = intent.getStringExtra("TIME");
+        city = intent.getStringExtra("CITY");
+        requests = intent.getStringExtra("ADDITIONAL_REQUESTS");
 
         NumberFormat format = NumberFormat.getCurrencyInstance(Locale.FRANCE);
         String formattedPrice = format.format(vanPrice);
@@ -83,31 +92,14 @@ public class PaymentActivity extends AppCompatActivity {
     }
 
     private void setupPaymentMethodSelection() {
-        // Réinitialiser la sélection au démarrage
         rgPaymentMethod.clearCheck();
         resetCardSelection();
 
-        // Gestion des clics sur les cartes
-        cardVisa.setOnClickListener(v -> {
-            rgPaymentMethod.check(R.id.rbVisa);
-            Log.d("Payment", "Visa selected");
-        });
+        cardVisa.setOnClickListener(v -> rgPaymentMethod.check(R.id.rbVisa));
+        cardMastercard.setOnClickListener(v -> rgPaymentMethod.check(R.id.rbMastercard));
+        cardPaypal.setOnClickListener(v -> rgPaymentMethod.check(R.id.rbPaypal));
 
-        cardMastercard.setOnClickListener(v -> {
-            rgPaymentMethod.check(R.id.rbMastercard);
-            Log.d("Payment", "Mastercard selected");
-        });
-
-        cardPaypal.setOnClickListener(v -> {
-            rgPaymentMethod.check(R.id.rbPaypal);
-            Log.d("Payment", "PayPal selected");
-        });
-
-        // Suivi des changements de sélection
-        rgPaymentMethod.setOnCheckedChangeListener((group, checkedId) -> {
-            Log.d("Payment", "RadioGroup selection changed: " + checkedId);
-            updateCardSelection(checkedId);
-        });
+        rgPaymentMethod.setOnCheckedChangeListener((group, checkedId) -> updateCardSelection(checkedId));
     }
 
     private void updateCardSelection(int checkedId) {
@@ -140,39 +132,80 @@ public class PaymentActivity extends AppCompatActivity {
     }
 
     private void processPayment() {
+        String cardHolder = etCardHolder.getText().toString();
+        String cardNumber = etCardNumber.getText().toString();
+        String expiryDate = etExpiryDate.getText().toString();
+        String paymentMethod = ((RadioButton) findViewById(rgPaymentMethod.getCheckedRadioButtonId())).getText().toString();
+
+        JSONObject json = new JSONObject();
+        try {
+            json.put("vanName", vanName);
+            json.put("vanPrice", vanPrice);
+            json.put("fullName", fullName);
+            json.put("email", email);
+            json.put("phone", phone);
+            json.put("date", date);
+            json.put("time", time);
+            json.put("city", city);
+            json.put("requests", requests);
+            json.put("paymentMethod", paymentMethod);
+
+            JSONObject cardInfo = new JSONObject();
+            cardInfo.put("cardHolder", cardHolder);
+            cardInfo.put("cardNumber", cardNumber);
+            cardInfo.put("expiryDate", expiryDate);
+
+            json.put("cardInfo", cardInfo);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Erreur JSON", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String url = ApiClient.BASE_URL + "/booking"; // 🔗 ton endpoint backend
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, json,
+                response -> {
+                    Toast.makeText(getApplicationContext(), "Réservation enregistrée !", Toast.LENGTH_SHORT).show();
+                    retourAccueil();
+                },
+                error -> {
+                    Toast.makeText(getApplicationContext(), "Erreur de réseau ou serveur", Toast.LENGTH_LONG).show();
+                    Log.e("VolleyError", error.toString());
+                }
+        );
+
+        Volley.newRequestQueue(this).add(request);
+    }
+
+    private void retourAccueil() {
         btnConfirmPayment.setEnabled(false);
         btnConfirmPayment.setText("Paiement confirmé !");
         btnConfirmPayment.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.green_600));
 
-        Toast.makeText(this, "Paiement effectué avec succès", Toast.LENGTH_SHORT).show();
-
         new android.os.Handler().postDelayed(() -> {
-            Intent intent = new Intent(PaymentActivity.this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            Intent i = new Intent(PaymentActivity.this, MainActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
             finish();
         }, 2000);
     }
 
     private boolean validatePaymentForm() {
         boolean isValid = true;
-
         if (!validatePaymentMethod()) isValid = false;
         if (!validateCardNumber()) isValid = false;
         if (!validateCardHolder()) isValid = false;
         if (!validateExpiryDate()) isValid = false;
         if (!validateCvv()) isValid = false;
-
         return isValid;
     }
 
     private boolean validatePaymentMethod() {
         if (rgPaymentMethod.getCheckedRadioButtonId() == -1) {
             Toast.makeText(this, "Veuillez sélectionner un mode de paiement", Toast.LENGTH_SHORT).show();
-            Log.e("Validation", "Aucune méthode de paiement sélectionnée");
             return false;
         }
-        Log.d("Validation", "Méthode de paiement valide");
         return true;
     }
 
@@ -198,11 +231,27 @@ public class PaymentActivity extends AppCompatActivity {
 
     private boolean validateExpiryDate() {
         String date = etExpiryDate.getText().toString().trim();
-        if (!date.matches("^(0[1-9]|1[0-2])[0-9]{2}$"
-        )) {
-            etExpiryDate.setError("Format MM/AA invalide (ex: 0525)");
+
+        // Assure que le format est bien MM/YY
+        if (!date.matches("^(0[1-9]|1[0-2])/\\d{2}$")) {
+            etExpiryDate.setError("Format invalide. Exemple : 05/25");
             return false;
         }
+
+        // Optionnel : vérifier que la date est dans le futur
+        String[] parts = date.split("/");
+        int month = Integer.parseInt(parts[0]);
+        int year = Integer.parseInt("20" + parts[1]);
+
+        java.util.Calendar now = java.util.Calendar.getInstance();
+        int currentMonth = now.get(java.util.Calendar.MONTH) + 1; // 0-based
+        int currentYear = now.get(java.util.Calendar.YEAR);
+
+        if (year < currentYear || (year == currentYear && month < currentMonth)) {
+            etExpiryDate.setError("Date expirée");
+            return false;
+        }
+
         etExpiryDate.setError(null);
         return true;
     }

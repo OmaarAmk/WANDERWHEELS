@@ -11,10 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="100dp">
+        android:layout_marginTop="70dp">
 
-
-        <!-- Carte contenant l'en-tête et le formulaire -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,7 +25,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- En-tête bleu -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -57,16 +54,8 @@
                             android:alpha="0.9"
                             android:layout_marginTop="4dp" />
                     </LinearLayout>
-
-                    <!-- (Optionnel) Espace pour une icône à droite -->
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="24dp"
-                        app:cardElevation="0dp" />
                 </LinearLayout>
 
-                <!-- Contenu du formulaire -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -74,7 +63,7 @@
                     android:padding="16dp"
                     android:background="#FFFFFF">
 
-                    <!-- Champ : Nom Complet -->
+                    <!-- Nom complet -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilFullName"
                         android:layout_width="match_parent"
@@ -92,7 +81,7 @@
                             android:inputType="textPersonName"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Champ : Email -->
+                    <!-- Email -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilEmail"
                         android:layout_width="match_parent"
@@ -109,27 +98,27 @@
                             android:hint="Adresse Email"
                             android:inputType="textEmailAddress"/>
                     </com.google.android.material.textfield.TextInputLayout>
-                 <!--CHAMP DE VILLE -->
+
+                    <!-- Ville -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilCity"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
                         app:startIconDrawable="@drawable/ic_location"
+                        app:startIconTint="#1E88E5"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-                    app:startIconTint="#1E88E5"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etCity"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Ville"
+                            android:inputType="textCapWords" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etCity"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Ville"
-                        android:inputType="textCapWords" />
-                </com.google.android.material.textfield.TextInputLayout>
-                    <!-- Champ : Téléphone -->
+                    <!-- Téléphone -->
                     <com.google.android.material.textfield.TextInputLayout
-
                         android:id="@+id/tilPhoneNumber"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -146,16 +135,16 @@
                             android:inputType="phone"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Ligne : Date et Heure -->
+                    <!-- Ligne : Date de début et de fin -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_marginBottom="16dp">
 
-                        <!-- Date -->
+                        <!-- Date de début -->
                         <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/tilBookingDate"
+                            android:id="@+id/tilStartDate"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -165,38 +154,56 @@
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                             <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/etBookingDate"
+                                android:id="@+id/etStartDate"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="Date de Réservation"
-                                android:inputType="date"
+                                android:hint="Date de Début"
                                 android:focusable="false"
                                 android:clickable="true"/>
                         </com.google.android.material.textfield.TextInputLayout>
 
-                        <!-- Heure -->
+                        <!-- Date de fin -->
                         <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/tilBookingTime"
+                            android:id="@+id/tilEndDate"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginLeft="8dp"
-                            app:startIconDrawable="@drawable/ic_clock"
+                            app:startIconDrawable="@drawable/ic_calendar"
                             app:startIconTint="#1E88E5"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                             <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/etBookingTime"
+                                android:id="@+id/etEndDate"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="Heure de Réservation"
-                                android:inputType="time"
+                                android:hint="Date de Fin"
                                 android:focusable="false"
                                 android:clickable="true"/>
                         </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
 
-                    <!-- Champ : Demandes Supplémentaires -->
+                    <!-- Heure -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilBookingTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        app:startIconDrawable="@drawable/ic_clock"
+                        app:startIconTint="#1E88E5"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etBookingTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Heure de Réservation"
+                            android:inputType="time"
+                            android:focusable="false"
+                            android:clickable="true"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Demandes supplémentaires -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilAdditionalRequests"
                         android:layout_width="match_parent"
@@ -216,7 +223,7 @@
                             android:gravity="top|start"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Bouton : Confirmer -->
+                    <!-- Bouton de confirmation -->
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnProceedToPayment"
                         android:layout_width="match_parent"

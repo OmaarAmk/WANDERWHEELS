@@ -8,15 +8,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -24,8 +23,8 @@ import java.util.regex.Pattern;
 
 public class BookingActivity extends AppCompatActivity {
 
-    private TextInputLayout tilFullName, tilEmail, tilPhoneNumber, tilBookingDate, tilBookingTime, tilCity;
-    private TextInputEditText etFullName, etEmail, etPhoneNumber, etBookingDate, etBookingTime, etAdditionalRequests, etCity;
+    private TextInputLayout tilFullName, tilEmail, tilPhoneNumber, tilStartDate, tilEndDate, tilBookingTime, tilCity;
+    private TextInputEditText etFullName, etEmail, etPhoneNumber, etStartDate, etEndDate, etBookingTime, etAdditionalRequests, etCity;
     private Button btnProceedToPayment;
     private Calendar calendar;
     private SimpleDateFormat dateFormatter, timeFormatter;
@@ -45,14 +44,16 @@ public class BookingActivity extends AppCompatActivity {
         tilFullName = findViewById(R.id.tilFullName);
         tilEmail = findViewById(R.id.tilEmail);
         tilPhoneNumber = findViewById(R.id.tilPhoneNumber);
-        tilBookingDate = findViewById(R.id.tilBookingDate);
+        tilStartDate = findViewById(R.id.tilStartDate);
+        tilEndDate = findViewById(R.id.tilEndDate);
         tilBookingTime = findViewById(R.id.tilBookingTime);
         tilCity = findViewById(R.id.tilCity);
 
         etFullName = findViewById(R.id.etFullName);
         etEmail = findViewById(R.id.etEmail);
         etPhoneNumber = findViewById(R.id.etPhoneNumber);
-        etBookingDate = findViewById(R.id.etBookingDate);
+        etStartDate = findViewById(R.id.etStartDate);
+        etEndDate = findViewById(R.id.etEndDate);
         etBookingTime = findViewById(R.id.etBookingTime);
         etAdditionalRequests = findViewById(R.id.etAdditionalRequests);
         etCity = findViewById(R.id.etCity);
@@ -68,24 +69,38 @@ public class BookingActivity extends AppCompatActivity {
         Calendar defaultTime = Calendar.getInstance();
         defaultTime.add(Calendar.HOUR_OF_DAY, 1);
 
-        etBookingDate.setText(dateFormatter.format(calendar.getTime()));
         etBookingTime.setText(timeFormatter.format(defaultTime.getTime()));
     }
 
     private void setupDateAndTimeFields() {
-        etBookingDate.setOnClickListener(v -> showDatePicker());
+        etStartDate.setOnClickListener(v -> showStartDatePicker());
+        etEndDate.setOnClickListener(v -> showEndDatePicker());
         etBookingTime.setOnClickListener(v -> showTimePicker());
     }
 
-    private void showDatePicker() {
+    private void showStartDatePicker() {
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 this,
                 (view, year, month, dayOfMonth) -> {
-                    calendar.set(Calendar.YEAR, year);
-                    calendar.set(Calendar.MONTH, month);
-                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                    etBookingDate.setText(dateFormatter.format(calendar.getTime()));
-                    tilBookingDate.setError(null);
+                    calendar.set(year, month, dayOfMonth);
+                    etStartDate.setText(dateFormatter.format(calendar.getTime()));
+                    tilStartDate.setError(null);
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        );
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+        datePickerDialog.show();
+    }
+
+    private void showEndDatePicker() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                (view, year, month, dayOfMonth) -> {
+                    calendar.set(year, month, dayOfMonth);
+                    etEndDate.setText(dateFormatter.format(calendar.getTime()));
+                    tilEndDate.setError(null);
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -126,7 +141,7 @@ public class BookingActivity extends AppCompatActivity {
     private boolean validateForm() {
         boolean isValid = true;
 
-        // Validation du nom
+        // Nom
         String fullName = etFullName.getText().toString().trim();
         if (fullName.isEmpty() || fullName.length() < 3) {
             tilFullName.setError("Veuillez entrer un nom valide");
@@ -135,7 +150,7 @@ public class BookingActivity extends AppCompatActivity {
             tilFullName.setError(null);
         }
 
-        // Validation de l'email
+        // Email
         String email = etEmail.getText().toString().trim();
         Pattern emailPattern = Pattern.compile("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+");
         if (email.isEmpty() || !emailPattern.matcher(email).matches()) {
@@ -145,7 +160,7 @@ public class BookingActivity extends AppCompatActivity {
             tilEmail.setError(null);
         }
 
-        // Validation du téléphone
+        // Téléphone
         String phone = etPhoneNumber.getText().toString().trim();
         Pattern phonePattern = Pattern.compile("[0-9]{10,15}");
         if (phone.isEmpty() || !phonePattern.matcher(phone).matches()) {
@@ -155,25 +170,52 @@ public class BookingActivity extends AppCompatActivity {
             tilPhoneNumber.setError(null);
         }
 
-        // Validation de la ville
+        // Ville
         String city = etCity.getText().toString().trim();
         Pattern cityPattern = Pattern.compile("^[a-zA-Z\\séèêëàâäîïôöùûüç-]{2,50}$");
         if (city.isEmpty() || !cityPattern.matcher(city).matches()) {
-            tilCity.setError("Veuillez entrer un nom de ville valide (2-50 caractères)");
+            tilCity.setError("Veuillez entrer un nom de ville valide");
             isValid = false;
         } else {
             tilCity.setError(null);
         }
 
-        // Validation de la date
-        if (etBookingDate.getText().toString().trim().isEmpty()) {
-            tilBookingDate.setError("Veuillez sélectionner une date");
+        // Dates
+        String startDateStr = etStartDate.getText().toString().trim();
+        String endDateStr = etEndDate.getText().toString().trim();
+        if (startDateStr.isEmpty()) {
+            tilStartDate.setError("Veuillez sélectionner une date de début");
             isValid = false;
         } else {
-            tilBookingDate.setError(null);
+            tilStartDate.setError(null);
+        }
+        if (endDateStr.isEmpty()) {
+            tilEndDate.setError("Veuillez sélectionner une date de fin");
+            isValid = false;
+        } else {
+            tilEndDate.setError(null);
         }
 
-        // Validation de l'heure
+        try {
+            if (!startDateStr.isEmpty() && !endDateStr.isEmpty()) {
+                Calendar startCal = Calendar.getInstance();
+                Calendar endCal = Calendar.getInstance();
+                startCal.setTime(dateFormatter.parse(startDateStr));
+                endCal.setTime(dateFormatter.parse(endDateStr));
+
+                if (endCal.before(startCal)) {
+                    tilEndDate.setError("La date de fin doit être après la date de début");
+                    isValid = false;
+                } else {
+                    tilEndDate.setError(null);
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            isValid = false;
+        }
+
+        // Heure
         if (etBookingTime.getText().toString().trim().isEmpty()) {
             tilBookingTime.setError("Veuillez sélectionner une heure");
             isValid = false;
@@ -191,7 +233,8 @@ public class BookingActivity extends AppCompatActivity {
         intent.putExtra("FULL_NAME", etFullName.getText().toString().trim());
         intent.putExtra("EMAIL", etEmail.getText().toString().trim());
         intent.putExtra("PHONE", etPhoneNumber.getText().toString().trim());
-        intent.putExtra("DATE", etBookingDate.getText().toString().trim());
+        intent.putExtra("START_DATE", etStartDate.getText().toString().trim());
+        intent.putExtra("END_DATE", etEndDate.getText().toString().trim());
         intent.putExtra("TIME", etBookingTime.getText().toString().trim());
         intent.putExtra("CITY", etCity.getText().toString().trim());
         intent.putExtra("ADDITIONAL_REQUESTS", etAdditionalRequests.getText().toString().trim());

@@ -73,7 +73,7 @@ public class PaymentActivity extends AppCompatActivity {
         fullName = intent.getStringExtra("FULL_NAME");
         email = intent.getStringExtra("EMAIL");
         phone = intent.getStringExtra("PHONE");
-        date = intent.getStringExtra("DATE");
+        date = intent.getStringExtra("START_DATE");
         time = intent.getStringExtra("TIME");
         city = intent.getStringExtra("CITY");
         requests = intent.getStringExtra("ADDITIONAL_REQUESTS");
@@ -92,9 +92,10 @@ public class PaymentActivity extends AppCompatActivity {
     }
 
     private void setupPaymentMethodSelection() {
+        // Réinitialiser la sélection au démarrage
         rgPaymentMethod.clearCheck();
         resetCardSelection();
-
+        // Gestion des clics sur les cartes
         cardVisa.setOnClickListener(v -> rgPaymentMethod.check(R.id.rbVisa));
         cardMastercard.setOnClickListener(v -> rgPaymentMethod.check(R.id.rbMastercard));
         cardPaypal.setOnClickListener(v -> rgPaymentMethod.check(R.id.rbPaypal));
@@ -171,7 +172,8 @@ public class PaymentActivity extends AppCompatActivity {
                 },
                 error -> {
                     Toast.makeText(getApplicationContext(), "Erreur de réseau ou serveur", Toast.LENGTH_LONG).show();
-                    Log.e("VolleyError", error.toString());
+                    Log.e("VolleyError", "Erreur Volley : " + error.getMessage(), error);
+
                 }
         );
 
@@ -231,30 +233,15 @@ public class PaymentActivity extends AppCompatActivity {
 
     private boolean validateExpiryDate() {
         String date = etExpiryDate.getText().toString().trim();
-
-        // Assure que le format est bien MM/YY
-        if (!date.matches("^(0[1-9]|1[0-2])/\\d{2}$")) {
-            etExpiryDate.setError("Format invalide. Exemple : 05/25");
+        if (!date.matches("^(0[1-9]|1[0-2])[0-9]{2}$"
+        )) {
+            etExpiryDate.setError("Format MM/AA invalide (ex: 0525)");
             return false;
         }
-
-        // Optionnel : vérifier que la date est dans le futur
-        String[] parts = date.split("/");
-        int month = Integer.parseInt(parts[0]);
-        int year = Integer.parseInt("20" + parts[1]);
-
-        java.util.Calendar now = java.util.Calendar.getInstance();
-        int currentMonth = now.get(java.util.Calendar.MONTH) + 1; // 0-based
-        int currentYear = now.get(java.util.Calendar.YEAR);
-
-        if (year < currentYear || (year == currentYear && month < currentMonth)) {
-            etExpiryDate.setError("Date expirée");
-            return false;
-        }
-
         etExpiryDate.setError(null);
         return true;
     }
+
 
     private boolean validateCvv() {
         String cvv = etCvv.getText().toString().trim();
